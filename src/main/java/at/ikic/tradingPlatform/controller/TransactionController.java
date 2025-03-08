@@ -1,36 +1,27 @@
 package at.ikic.tradingPlatform.controller;
 
-import at.ikic.tradingPlatform.Enum.TransactionType;
-import at.ikic.tradingPlatform.dto.request.WalletRequestDto;
+import at.ikic.tradingPlatform.dto.request.TransactionRequestDto;
+import at.ikic.tradingPlatform.entity.Transaction;
 import at.ikic.tradingPlatform.entity.Wallet;
 import at.ikic.tradingPlatform.repository.WalletRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
-public class WalletController {
+public class TransactionController {
 
     @Autowired
     private WalletRepository walletRepository;
 
-    @PatchMapping("/wallet/{id}")
-    public ResponseEntity<Wallet> patchWallet (@PathVariable UUID id, @RequestBody WalletRequestDto data){
-        Wallet wallet = walletRepository.findById(id).orElse(null);
+    @PostMapping("/transaction")
+    public ResponseEntity<Transaction> createTransaction (@RequestBody TransactionRequestDto data){
+        Wallet wallet = new Wallet();
 
-        BigDecimal newBalance;
-        assert wallet != null;
-        if ((data.getType() == TransactionType.BUY)) {
-            newBalance = wallet.getBalance().add(BigDecimal.valueOf(data.getAmount()));
-        } else {
-            newBalance = wallet.getBalance().subtract(BigDecimal.valueOf(data.getAmount()));
-        }
 
-        wallet.setBalance(newBalance);
 
         walletRepository.save(wallet);
 

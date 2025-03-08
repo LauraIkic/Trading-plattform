@@ -1,6 +1,6 @@
 package at.ikic.tradingPlatform.dto.request;
 
-import at.ikic.tradingPlatform.Enum.WalletTransactionType;
+import at.ikic.tradingPlatform.Enum.TransactionType;
 import lombok.Data;
 import jakarta.validation.constraints.NotNull;
 
@@ -11,5 +11,5 @@ public class WalletRequestDto {
     private Long amount;
 
     @NotNull(message = "Type cannot be null")
-    private WalletTransactionType type;
+    private TransactionType type;
 }
