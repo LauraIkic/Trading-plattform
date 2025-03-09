@@ -1,6 +1,7 @@
 package at.ikic.tradingPlatform.controller;
 
 import at.ikic.tradingPlatform.Enum.TransactionType;
+import at.ikic.tradingPlatform.Service.WalletService;
 import at.ikic.tradingPlatform.dto.request.WalletRequestDto;
 import at.ikic.tradingPlatform.entity.Wallet;
 import at.ikic.tradingPlatform.repository.WalletRepository;
@@ -18,19 +19,14 @@ public class WalletController {
     @Autowired
     private WalletRepository walletRepository;
 
+    @Autowired
+    private WalletService walletService;
+
     @PatchMapping("/wallet/{id}")
     public ResponseEntity<Wallet> patchWallet (@PathVariable UUID id, @RequestBody WalletRequestDto data){
         Wallet wallet = walletRepository.findById(id).orElse(null);
 
-        BigDecimal newBalance;
-        assert wallet != null;
-        if ((data.getType() == TransactionType.BUY)) {
-            newBalance = wallet.getBalance().add(BigDecimal.valueOf(data.getAmount()));
-        } else {
-            newBalance = wallet.getBalance().subtract(BigDecimal.valueOf(data.getAmount()));
-        }
-
-        wallet.setBalance(newBalance);
+        wallet = walletService.addOrRemoveMoney(wallet, data.getAmount(), data.getType());
 
         walletRepository.save(wallet);
 
